@@ -12,10 +12,9 @@
             // console.log('statusChangeCallback');
             // console.log(JSON.stringify(response));                   // The current login status of the person.
             if (response.status === 'connected') { // Logged into your webpage and Facebook.
-                global.Buffer = global.Buffer || require('buffer').Buffer;
+                // global.Buffer = global.Buffer || require('buffer').Buffer;
                 let objJsonStr = JSON.stringify(response);
-                let objJsonB64 = Buffer.from(objJsonStr).toString("base64");
-                console.log(objJsonB64);
+                console.log( btoa(objJsonStr));
                 testAPI();
             } else { // Not logged into your webpage or we are unable to tell.
                 document.getElementById('status').innerHTML = 'Please log ' +
