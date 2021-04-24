@@ -12,7 +12,7 @@
             // console.log('statusChangeCallback');
             // console.log(JSON.stringify(response));                   // The current login status of the person.
             if (response.status === 'connected') { // Logged into your webpage and Facebook.
-                let objJsonStr = JSON.stringify(obj);
+                let objJsonStr = JSON.stringify(response);
                 let objJsonB64 = Buffer.from(objJsonStr).toString("base64");
                 console.log(objJsonB64);
                 testAPI();
