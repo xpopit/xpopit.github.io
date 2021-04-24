@@ -1,102 +1,66 @@
-<!--#
-A complete HTML page for a Facebook "app" that does login entirely on the client. 
-1 - Create a Facebook application (see Facebook developer docs.). 
-2 - Because of a Facebook "bug" the app should have Sandbox Mode 
-disabled (App Settings - Advanced - Authentication). 
-3 - Uncomment the appropriate redirectUrl var. 4 - Update the appId and 
-redirectUrl vars with your Facebook app values. 5 - Make the page available from a server.
-
- Thanks to http://www.guineacode.com/2011/facebook-app-authorization/
- for the FB.getLoginStatus example that allows all the Facebook
- authorization to be done client-side.
--->
- 
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
- <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <title>Title</title>
-  <!--[if IE]><![endif]-->
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
- </head>
- <body>
- 
-  <div id="fb-root"></div>
-  <script type="text/javascript">
- 
-   $(document).ready(function(){
- 
- 
-    var appId = YOUR_APP_ID;
-    // If logging in as a Facebook canvas application use this URL.
-    //var redirectUrl = "http://apps.facebook.com/YOUR_APP_NAMESPACE";
-    // If logging in as a website do this. Be sure to add the host to your application's App Domain list. 
-    //var redirectUrl = window.location.href;
- 
- 
-    // If the user did not grant the app authorization go ahead and
-    // tell them that. Stop code execution.
-    if (0 <= window.location.href.indexOf ("error_reason"))
-    {
-     $(document.body).append ("<p>Authorization denied!</p>");
-     return;
+<head>
+<title>Facebook Login JavaScript Example</title>
+<meta charset="UTF-8">
+</head>
+<body>
+<script>
+
+  function statusChangeCallback(response) {  // Called with the results from FB.getLoginStatus().
+    console.log('statusChangeCallback');
+    console.log(response);                   // The current login status of the person.
+    if (response.status === 'connected') {   // Logged into your webpage and Facebook.
+      testAPI();  
+    } else {                                 // Not logged into your webpage or we are unable to tell.
+      document.getElementById('status').innerHTML = 'Please log ' +
+        'into this webpage.';
     }
+  }
+
+
+  function checkLoginState() {               // Called when a person is finished with the Login Button.
+    FB.getLoginStatus(function(response) {   // See the onlogin handler
+      statusChangeCallback(response);
+    });
+  }
+
+
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '{app-id}',
+      cookie     : true,                     // Enable cookies to allow the server to access the session.
+      xfbml      : true,                     // Parse social plugins on this webpage.
+      version    : '{api-version}'           // Use this Graph API version for this call.
+    });
+
+
+    FB.getLoginStatus(function(response) {   // Called after the JS SDK has been initialized.
+      statusChangeCallback(response);        // Returns the login status.
+    });
+  };
  
- 
-    // When the Facebook SDK script has finished loading init the
-    // SDK and then get the login status of the user. The status is
-    // reported in the handler.
-    window.fbAsyncInit = function(){
- 
-     //debugger;
- 
-     FB.init({
-      appId : appId,
-      status : true,
-      cookie : true,
-      oauth : true
-      });
- 
-     // Sandbox Mode must be disabled in the application's settings
-     // otherwise the callback will never be invoked. Monitoring network
-     // traffic will show an error message in the response. Change the
-     // Sandbox Mode setting in: App Settings - Advanced - Authentication.
-     FB.getLoginStatus (onCheckLoginStatus);
-    };
- 
- 
-    // Loads the Facebook SDK script.
-    (function(d)
-    {
-     var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
-     js = d.createElement('script'); js.id = id; js.async = true;
-     js.src = "//connect.facebook.net/en_US/all.js";
-     d.getElementsByTagName('head')[0].appendChild(js);
-    }(document));
- 
- 
-    // Handles the response from getting the user's login status.
-    // If the user is logged in and the app is authorized go ahead
-    // and start running the application. If they are not logged in
-    // then redirect to the auth dialog.
-    function onCheckLoginStatus (response)
-    {
-     if (response.status != "connected")
-     {
-      top.location.href = "https://www.facebook.com/dialog/oauth?client_id=" + appId + "&redirect_uri=" + encodeURIComponent (redirectUrl) + "&scope=user_photos,friends_photos";
-     }
-     else
-     {
-      // Start the application (this is just demo code)!
-      $(document.body).append ("<p>Authorized!</p>");
-      FB.api('/me', function (response) {
-       $(document.body).append ("<pre>" + JSON.stringify (response, null, "\t") + "</pre>");
-      });
-     }
-    }
-   });
- 
-  </script>
- </body>
+  function testAPI() {                      // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
+    console.log('Welcome!  Fetching your information.... ');
+    FB.api('/me', function(response) {
+      console.log('Successful login for: ' + response.name);
+      document.getElementById('status').innerHTML =
+        'Thanks for logging in, ' + response.name + '!';
+    });
+  }
+
+</script>
+
+
+<!-- The JS SDK Login Button -->
+
+<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+</fb:login-button>
+
+<div id="status">
+</div>
+
+<!-- Load the JS SDK asynchronously -->
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+</body>
 </html>
