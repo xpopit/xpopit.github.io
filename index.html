@@ -15,7 +15,6 @@
                 // global.Buffer = global.Buffer || require('buffer').Buffer;
                 let objJsonStr = JSON.stringify(response.authResponse.accessToken);
                 console.log(objJsonStr);
-                console.log(btoa(objJsonStr));
                 testAPI();
             } else { // Not logged into your webpage or we are unable to tell.
                 // document.getElementById('status').innerHTML = 'Please log ' +
